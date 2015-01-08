@@ -7,19 +7,60 @@ public class Hand {
 
 	public ArrayList<Player> players;
 	public int cards;
-	public int round;
-	public ArrayList<Cards> cardsOut;
+	public static ArrayList<Cards> cardsOut = new ArrayList<Cards>();
 	public ArrayList<Cards> cardsLeft = new ArrayList<Cards>();
 	public Random rand = new Random();
 	static final Value[] VALUES = Value.values();
 	static final Suit[] SUITS = Suit.values();
-	public final Scanner scan = new Scanner(System.in);
+	public static int playerCount;
+	public static int cardsToDeal;
+	public static Scanner scan = new Scanner(System.in);
 
-	public Hand(ArrayList<Player> players, int cards, int round, ArrayList<Cards> cardsOut) {
+	public static void main(String[] args) {
+		int playerCount;
+		int cardsToDeal = 7;
+		Scanner scan = new Scanner(System.in);
+		System.out.println("How many players");
+		playerCount = scan.nextInt();
+		ArrayList<Player> playable = new ArrayList<Player>();
+		for (int i = 0; i < playerCount; i++) {
+			playable.add(new Player(0));
+		}
+
+		while (playable.size() > 1) {
+
+			Hand newHand = new Hand(playable, cardsToDeal, cardsOut);
+
+			System.out.println("What player lost?");
+			int a = scan.nextInt();
+			cardsOut.add(newHand.players.get(a).hand.get(0));
+			for (int i = 0; i < 13; i++) {
+				if (VALUES[i].equals(newHand.players.get(a).hand.get(0).value)) {
+					if (VALUES[i].equals(Value.KING) || VALUES[i].equals(Value.QUEEN) || VALUES[i].equals(Value.JACK)) {
+						cardsToDeal = 10;
+					}
+					else if (VALUES[i].equals(Value.ACE)) {
+						cardsToDeal = 11;
+					}
+					else {
+						cardsToDeal = 14 - i;
+					}
+					break;
+				}
+			}
+			System.out.println("What Players are out?");
+			while (scan.hasNextInt()) {
+				playable.remove(scan.nextInt());
+			}
+		}
+
+		scan.close();
+
+	}
+	public Hand(ArrayList<Player> players, int cards, ArrayList<Cards> cardsOut) {
 		this.players = players;
 		this.cards = cards;
-		this.round = round;
-		this.cardsOut = cardsOut;
+		Hand.cardsOut = cardsOut;
 
 		initCards(cardsOut);
 
@@ -52,6 +93,7 @@ public class Hand {
 			}
 			play = peace;
 			for (int j = 0; j < players.size(); j++) {
+				@SuppressWarnings("resource")
 				Scanner scan = new Scanner(System.in);
 				System.out.println("Player " + play + ", What cards would you like to play?");
 				for (int count = 0; count < players.get(play).hand.size(); count++) {
@@ -79,7 +121,11 @@ public class Hand {
 			}
 			a++;
 		}
-
+		System.out.println("Round result : ");
+		for (int i = 0; i < players.size(); i++) {
+			System.out.println("Player " + i + " : " + players.get(i).hand.get(0).value + " of "
+					+ players.get(i).hand.get(0).suit);
+		}
 	}
 	public void sort(Player player) {
 		int size = player.hand.size();
@@ -118,8 +164,9 @@ public class Hand {
 	}
 	public void trade(int play) {
 		Player player = players.get(play);
+		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Player " + play + " What cards would you like to trade in?");
+		System.out.println("Player " + play + " What cards would you like to trade in? Cards Left : " + cardsLeft.size());
 		for (int count = 0; count < player.hand.size(); count++) {
 			System.out.println(count + ": " + player.hand.get(count).value + " of "
 					+ player.hand.get(count).suit);
