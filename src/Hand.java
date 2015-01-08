@@ -48,7 +48,12 @@ public class Hand {
 					break;
 				}
 			}
+			newHand.players.get(a).points += cardsToDeal;
 			System.out.println("What Players are out?");
+			System.out.println("Player Points :");
+			for (int i = 0; i < playable.size(); i++) {
+				System.out.println("Player " + i + " : " + newHand.players.get(i).points);
+			}
 			while (scan.hasNextInt()) {
 				playable.remove(scan.nextInt());
 			}
