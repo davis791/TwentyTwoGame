@@ -32,7 +32,9 @@ public class Hand {
 			Hand newHand = new Hand(playable, cardsToDeal, cardsOut);
 
 			System.out.println("What player lost?");
-			int a = scan.nextInt();
+			int a = 0;
+			while (!scan.hasNextInt())
+				a = scan.nextInt();
 			cardsOut.add(newHand.players.get(a).hand.get(0));
 			for (int i = 0; i < 13; i++) {
 				if (VALUES[i].equals(newHand.players.get(a).hand.get(0).value)) {
