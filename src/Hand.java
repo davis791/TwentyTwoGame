@@ -33,7 +33,7 @@ public class Hand {
 
 			System.out.println("What player lost?");
 			int a = 0;
-			while (!scan.hasNextInt())
+			while (scan.hasNextInt())
 				a = scan.nextInt();
 			cardsOut.add(newHand.players.get(a).hand.get(0));
 			for (int i = 0; i < 13; i++) {
